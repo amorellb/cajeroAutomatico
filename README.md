@@ -82,7 +82,7 @@ micajero.getListaTarjeta().add(mitarj1);
 micajero.getListaTarjeta().add(mitarj2);
 ~~~
 
-### Ejemplo de ejecución del programa:
+## Ejemplo de ejecución del programa:
 
 #### DATOS DE LA TARJETA DEL CLIENTE
 
