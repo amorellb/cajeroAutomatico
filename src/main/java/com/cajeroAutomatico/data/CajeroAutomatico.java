@@ -6,7 +6,6 @@ import java.util.List;
 public class CajeroAutomatico {
     private Integer idUltCajero = 0;
     private Integer idCajero = 0;
-    private List<Billetes> billsList = new ArrayList<>();
     private List<Tarjeta> tarjetas = new ArrayList<>();
     private int[][] billetes;
 
@@ -26,6 +25,8 @@ public class CajeroAutomatico {
         this.billsList = cajeroAutomatico.billsList;
         this.tarjetas = cajeroAutomatico.tarjetas;
     }
+
+    private List<Billetes> billsList = new ArrayList<>();
 
     public Integer getIdUltCajero() {
         return idUltCajero;

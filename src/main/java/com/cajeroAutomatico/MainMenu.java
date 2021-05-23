@@ -1,6 +1,7 @@
 package com.cajeroAutomatico;
 
 import com.cajeroAutomatico.data.CajeroAutomatico;
+import com.cajeroAutomatico.data.Tarjeta;
 import com.cajeroAutomatico.data.TarjetaCredito;
 import com.cajeroAutomatico.data.TarjetaDebito;
 import com.cajeroAutomatico.service.AtmService;
@@ -24,7 +25,9 @@ public class MainMenu {
         tarjetaDebito.mostrarTarjeta();
         tarjetaCredito.mostrarTarjeta();
 
-        
+        boolean salir = true;
+        while (salir) {
 
+        }
     }
 }
