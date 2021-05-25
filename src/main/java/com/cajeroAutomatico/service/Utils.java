@@ -1,10 +1,12 @@
 package com.cajeroAutomatico.service;
 
 import com.cajeroAutomatico.data.CajeroAutomatico;
-import com.cajeroAutomatico.data.Tarjeta;
-import com.cajeroAutomatico.data.TarjetaDebito;
 
 public class Utils {
+
+    public static boolean checkOperation(String input) {
+        return !input.toLowerCase().trim().equals("salir") && !input.toLowerCase().trim().equals("sacar dinero");
+    }
 
     public static boolean checkNif(CajeroAutomatico cajero, String nif) {
         boolean flag = false;
@@ -14,7 +16,7 @@ public class Utils {
                 break;
             }
         }
-        return flag;
+        return !flag;
     }
 
     public static boolean checkPin(CajeroAutomatico cajero, Integer pin) {
@@ -25,6 +27,15 @@ public class Utils {
                 break;
             }
         }
-        return flag;
+        return !flag;
+    }
+
+    public static Boolean isInt(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 }
