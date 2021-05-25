@@ -5,7 +5,7 @@ import com.cajeroAutomatico.data.CajeroAutomatico;
 public class Utils {
 
     public static boolean checkOperation(String input) {
-        return !input.toLowerCase().trim().equals("salir") && !input.toLowerCase().trim().equals("sacar dinero");
+        return input.toLowerCase().trim().equals("salir") || input.toLowerCase().trim().equals("sacar dinero");
     }
 
     public static boolean checkNif(CajeroAutomatico cajero, String nif) {

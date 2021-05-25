@@ -13,10 +13,10 @@ public class ClientInput {
         String operation;
         do {
             operation = input.nextLine();
-            if (Utils.checkOperation(operation)) {
+            if (!Utils.checkOperation(operation)) {
                 System.out.println("Operación no válida");
             }
-        } while (Utils.checkOperation(operation));
+        } while (!Utils.checkOperation(operation));
         return operation;
     }
 

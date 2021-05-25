@@ -13,7 +13,7 @@ public class MainMenu {
         int[][] carga_billetes = {{500, 10}, {200, 20}, {100, 40}, {50, 80}, {20, 100}, {10, 100}, {5, 500}};
         cajero.setBilletes(carga_billetes);
 
-        TarjetaDebito tarjetaDebito = new TarjetaDebito("12345678a", 1111, "Miquel", "Sureda", 20000);
+        TarjetaDebito tarjetaDebito = new TarjetaDebito("12345678a", 1111, "Miquel", "Smith", 20000);
         TarjetaCredito tarjetaCredito = new TarjetaCredito("87654321b", 2222, "Bernat", "Martorell", 2000, 5000);
 
         cajero.getTarjetas().add(tarjetaDebito);
@@ -41,30 +41,31 @@ public class MainMenu {
         System.out.println("- Salir");
         System.out.println("========================");
 
-        boolean salir = true;
-        while (salir) {
+        boolean salir = false;
+        while (!salir) {
             String operation;
             do {
                 operation = ClientInput.askOperation().toLowerCase();
                 if (operation.equals("salir")) {
                     System.out.println(" ");
                     System.out.println("Gracias por elegir nuestros servicios");
-                    salir = false;
-                    break;
+                    salir = true;
                 }
                 if (!operation.equals("sacar dinero")) {
                     System.out.println("Operación no válida");
                 }
             } while (!operation.equals("sacar dinero"));
 
-            int amount = ClientInput.askAmount();
-            String nif = ClientInput.askNif(cajero);
-            int pin = ClientInput.askPin(cajero);
+            if (!salir) {
+                int amount = ClientInput.askAmount();
+                String nif = ClientInput.askNif(cajero);
+                int pin = ClientInput.askPin(cajero);
 
-            if (tarjetaDebito.getClientNif().equals(nif) && tarjetaDebito.getClientPin().equals(pin)) {
-                AtmService.sacarDineroDebito(cajero, tarjetaDebito, amount);
-            } else if (tarjetaCredito.getClientNif().equals(nif) && tarjetaCredito.getClientPin().equals(pin)) {
-                AtmService.sacarDineroCredito(cajero, tarjetaCredito, amount);
+                if (tarjetaDebito.getClientNif().equals(nif) && tarjetaDebito.getClientPin().equals(pin)) {
+                    AtmService.sacarDineroDebito(cajero, tarjetaDebito, amount);
+                } else if (tarjetaCredito.getClientNif().equals(nif) && tarjetaCredito.getClientPin().equals(pin)) {
+                    AtmService.sacarDineroCredito(cajero, tarjetaCredito, amount);
+                }
             }
         }
     }
