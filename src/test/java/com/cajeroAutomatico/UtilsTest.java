@@ -50,12 +50,12 @@ public class UtilsTest {
 
     @Test
     void checkPinTrue() {
-        assertTrue(Utils.checkPin(cajero, 1111));
+        assertTrue(Utils.checkPin(cajero, "12345678a", 1111));
     }
 
     @Test
     void checkPinFalse() {
-        assertFalse(Utils.checkPin(cajero, 666));
+        assertFalse(Utils.checkPin(cajero, "12345678a", 666));
     }
 
     @Test

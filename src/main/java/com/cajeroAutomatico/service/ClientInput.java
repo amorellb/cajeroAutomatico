@@ -1,6 +1,7 @@
 package com.cajeroAutomatico.service;
 
 import com.cajeroAutomatico.data.CajeroAutomatico;
+import com.cajeroAutomatico.data.Tarjeta;
 
 import java.util.Scanner;
 
@@ -12,7 +13,7 @@ public class ClientInput {
         System.out.println("Qué operación deseas realizar?");
         String operation;
         do {
-            operation = input.nextLine();
+            operation = input.nextLine().toLowerCase();
             if (!Utils.checkOperation(operation)) {
                 System.out.println("Operación no válida");
             }
@@ -45,15 +46,15 @@ public class ClientInput {
         String nif;
         do {
             nif = input.nextLine();
-            if (Utils.checkNif(cajero, nif)) {
+            if (!Utils.checkNif(cajero, nif)) {
                 System.out.println("NIF incorrecto");
                 System.out.println("Introduce el NIF");
             }
-        } while (Utils.checkNif(cajero, nif));
+        } while (!Utils.checkNif(cajero, nif));
         return nif;
     }
 
-    public static Integer askPin(CajeroAutomatico cajero) {
+    public static Integer askPin(CajeroAutomatico cajero, String nif) {
         System.out.println("Introduce el PIN");
         String pinCode;
         int pin;
@@ -65,11 +66,11 @@ public class ClientInput {
                 pinCode = input.nextLine();
             }
             pin = Integer.parseInt(pinCode);
-            if (Utils.checkPin(cajero, pin)) {
+            if (!Utils.checkPin(cajero, nif, pin)) {
                 System.out.println("PIN incorrecto");
                 System.out.println("Introduce el PIN");
             }
-        } while (Utils.checkPin(cajero, pin));
+        } while (!Utils.checkPin(cajero, nif, pin));
         return pin;
     }
 }

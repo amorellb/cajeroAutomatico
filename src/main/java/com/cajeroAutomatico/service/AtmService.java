@@ -59,17 +59,17 @@ public class AtmService {
 
     }
 
-    public static void sacarDineroCredito(CajeroAutomatico cajero, TarjetaCredito tarjeta, Integer amount) {
+    public static void sacarDineroCredit(CajeroAutomatico cajero, TarjetaCredito tarjeta, Integer amount) {
         int dineroASacar = amount;
         int saldoSacado = 0;
-        int creditoSacado = 0;
+        int creditSacado = 0;
         int dineroSacado = 0;
         int cantidadBillete;
         int valorBillete;
 
         int saldo = tarjeta.getSaldoDisponible();
-        int credito = tarjeta.getCreditoDisponible();
-        int saldoTotal = saldo + credito;
+        int credit = tarjeta.getCreditoDisponible();
+        int saldoTotal = saldo + credit;
         int saldoCajero = calcularSaldoCajero(cajero);
 
         if (saldoTotal < dineroASacar || saldoCajero < dineroASacar) {
@@ -79,25 +79,25 @@ public class AtmService {
                 for (int i = 0; i < cajero.getBillsList().size(); i++) {
                     cantidadBillete = cajero.getBillsList().get(i).getQuantity();
                     valorBillete = cajero.getBillsList().get(i).getValue();
-                    while (cantidadBillete > 0 && dineroASacar > valorBillete) {
-                        if (saldoSacado <= saldo) {
+                    while (cantidadBillete > 0 && dineroASacar >= valorBillete) {
+                        if (saldo > 0) {
                             saldoSacado += valorBillete;
                             dineroASacar -= valorBillete;
+                            saldo -= valorBillete;
                             cantidadBillete--;
-                            saldo -= saldoSacado;
                             tarjeta.setSaldoDisponible(saldo);
                             cajero.getBillsList().get(i).setQuantity(cantidadBillete);
-                        } else if (creditoSacado <= credito) {
-                            creditoSacado += valorBillete;
+                        } else if (credit > 0 && saldo == 0) {
+                            creditSacado += valorBillete;
                             dineroASacar -= valorBillete;
+                            credit -= valorBillete;
                             cantidadBillete--;
-                            credito -= creditoSacado;
-                            tarjeta.setCreditoDisponible(credito);
+                            tarjeta.setCreditoDisponible(credit);
                             cajero.getBillsList().get(i).setQuantity(cantidadBillete);
                         }
                     }
                 }
-                dineroSacado = saldoSacado + creditoSacado;
+                dineroSacado = saldoSacado + creditSacado;
             }
             tarjeta.mostrarTarjeta();
             mostrarCajero(cajero);

@@ -51,20 +51,17 @@ public class MainMenu {
                     System.out.println("Gracias por elegir nuestros servicios");
                     salir = true;
                 }
-                if (!operation.equals("sacar dinero")) {
-                    System.out.println("Operación no válida");
-                }
-            } while (!operation.equals("sacar dinero"));
+            } while (!operation.equals("sacar dinero") && !salir);
 
             if (!salir) {
                 int amount = ClientInput.askAmount();
                 String nif = ClientInput.askNif(cajero);
-                int pin = ClientInput.askPin(cajero);
+                int pin = ClientInput.askPin(cajero, nif);
 
                 if (tarjetaDebito.getClientNif().equals(nif) && tarjetaDebito.getClientPin().equals(pin)) {
                     AtmService.sacarDineroDebito(cajero, tarjetaDebito, amount);
                 } else if (tarjetaCredito.getClientNif().equals(nif) && tarjetaCredito.getClientPin().equals(pin)) {
-                    AtmService.sacarDineroCredito(cajero, tarjetaCredito, amount);
+                    AtmService.sacarDineroCredit(cajero, tarjetaCredito, amount);
                 }
             }
         }
