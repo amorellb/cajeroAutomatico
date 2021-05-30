@@ -1,9 +1,6 @@
 package com.cajeroAutomatico.service;
 
-import com.cajeroAutomatico.data.Billetes;
-import com.cajeroAutomatico.data.CajeroAutomatico;
-import com.cajeroAutomatico.data.TarjetaCredito;
-import com.cajeroAutomatico.data.TarjetaDebito;
+import com.cajeroAutomatico.data.*;
 
 public class AtmService {
 
@@ -28,12 +25,35 @@ public class AtmService {
         }
     }
 
-    public static void sacarDineroDebito(CajeroAutomatico cajero, TarjetaDebito tarjeta, Integer dineroASacar) {
+    public static void sacarDinero(CajeroAutomatico cajero) {
+        int amount = ClientInput.askAmount();
+        String nif = ClientInput.askNif(cajero);
+        Integer pin = ClientInput.askPin(cajero, nif);
+
+        Tarjeta tarjeta = null;
+
+        for (int i = 0; i < cajero.getTarjetas().size(); i++) {
+            if (nif.equals(cajero.getTarjetas().get(i).getClientNif()) && pin.equals(cajero.getTarjetas().get(i).getClientPin()))
+                tarjeta = cajero.getTarjetas().get(i);
+        }
+
+        if (tarjeta instanceof TarjetaDebito) {
+            sacarDebitoArray(cajero, tarjeta, amount);
+            // sacarDineroDebito(cajero, tarjeta, amount);
+        } else if (tarjeta instanceof TarjetaCredito) {
+            sacarCreditArray(cajero, tarjeta, amount);
+            // sacarDineroCredit(cajero, tarjeta, amount);
+        }
+    }
+
+    public static void sacarDineroDebito(CajeroAutomatico cajero, Tarjeta tarjeta, Integer dineroASacar) {
         int dineroSacado = 0;
         int cantidadBillete;
         int valorBillete;
 
-        int saldoTarjeta = tarjeta.getSaldoDisponible();
+        TarjetaDebito tarjetaDebito = (TarjetaDebito) tarjeta;
+
+        int saldoTarjeta = tarjetaDebito.getSaldoDisponible();
         int saldoCajero = calcularSaldoCajero(cajero);
 
         if (saldoTarjeta < dineroASacar || saldoCajero < dineroASacar) {
@@ -51,21 +71,23 @@ public class AtmService {
                     }
                 }
             }
-            tarjeta.setSaldoDisponible(tarjeta.getSaldoDisponible() - dineroSacado);
-            tarjeta.mostrarTarjeta();
+            tarjetaDebito.setSaldoDisponible(tarjetaDebito.getSaldoDisponible() - dineroSacado);
+            tarjetaDebito.mostrarTarjeta();
             mostrarCajero(cajero);
         }
     }
 
-    public static void sacarDineroCredit(CajeroAutomatico cajero, TarjetaCredito tarjeta, Integer dineroASacar) {
+    public static void sacarDineroCredit(CajeroAutomatico cajero, Tarjeta tarjeta, Integer dineroASacar) {
         int saldoSacado = 0;
         int creditSacado = 0;
         int dineroSacado = 0;
         int cantidadBillete;
         int valorBillete;
 
-        int saldoTarjeta = tarjeta.getSaldoDisponible();
-        int creditTarjeta = tarjeta.getCreditoDisponible();
+        TarjetaCredito tarjetaCredit = (TarjetaCredito) tarjeta;
+
+        int saldoTarjeta = tarjetaCredit.getSaldoDisponible();
+        int creditTarjeta = tarjetaCredit.getCreditoDisponible();
         int saldoTotalTarjeta = saldoTarjeta + creditTarjeta;
         int saldoCajero = calcularSaldoCajero(cajero);
 
@@ -82,21 +104,21 @@ public class AtmService {
                             dineroASacar -= valorBillete;
                             saldoTarjeta -= valorBillete;
                             cantidadBillete--;
-                            tarjeta.setSaldoDisponible(saldoTarjeta);
+                            tarjetaCredit.setSaldoDisponible(saldoTarjeta);
                             cajero.getBillsList().get(i).setQuantity(cantidadBillete);
                         } else if (creditTarjeta > 0 && saldoTarjeta == 0) {
                             creditSacado += valorBillete;
                             dineroASacar -= valorBillete;
                             creditTarjeta -= valorBillete;
                             cantidadBillete--;
-                            tarjeta.setCreditoDisponible(creditTarjeta);
+                            tarjetaCredit.setCreditoDisponible(creditTarjeta);
                             cajero.getBillsList().get(i).setQuantity(cantidadBillete);
                         }
                     }
                 }
                 dineroSacado = saldoSacado + creditSacado;
             }
-            tarjeta.mostrarTarjeta();
+            tarjetaCredit.mostrarTarjeta();
             mostrarCajero(cajero);
         }
     }
@@ -113,12 +135,13 @@ public class AtmService {
         return saldoCajero;
     }
 
-    public static void sacarDebitoArray(CajeroAutomatico cajero, TarjetaDebito tarjeta, Integer dineroASacar) {
+    public static void sacarDebitoArray(CajeroAutomatico cajero, Tarjeta tarjeta, Integer dineroASacar) {
         int dineroSacado = 0;
         int valorBillete;
         int cantidadBillete;
 
-        int saldoTarjeta = tarjeta.getSaldoDisponible();
+        TarjetaDebito tarjetaDebito = (TarjetaDebito) tarjeta;
+        int saldoTarjeta = tarjetaDebito.getSaldoDisponible();
         int saldoCajero = saldoCajeroArray(cajero);
 
         if (dineroASacar > saldoCajero || dineroASacar > saldoTarjeta) {
@@ -136,21 +159,23 @@ public class AtmService {
                     }
                 }
             }
-            tarjeta.setSaldoDisponible(saldoTarjeta - dineroSacado);
-            tarjeta.mostrarTarjeta();
+            tarjetaDebito.setSaldoDisponible(saldoTarjeta - dineroSacado);
+            tarjetaDebito.mostrarTarjeta();
             mostrarCajeroArray(cajero);
         }
     }
 
-    public static void sacarCreditArray(CajeroAutomatico cajero, TarjetaCredito tarjeta, Integer dineroASacar) {
+    public static void sacarCreditArray(CajeroAutomatico cajero, Tarjeta tarjeta, Integer dineroASacar) {
         int saldoSacado = 0;
         int creditSacado = 0;
         int dineroTotalSacado = 0;
         int valorBillete;
         int cantidadBillete;
 
-        int saldoTarjeta = tarjeta.getSaldoDisponible();
-        int creditTarjeta = tarjeta.getCreditoDisponible();
+        TarjetaCredito tarjetaCredit = (TarjetaCredito) tarjeta;
+
+        int saldoTarjeta = tarjetaCredit.getSaldoDisponible();
+        int creditTarjeta = tarjetaCredit.getCreditoDisponible();
         int saldoTotalTarjeta = saldoTarjeta + creditTarjeta;
         int saldoCajero = saldoCajeroArray(cajero);
 
@@ -179,9 +204,9 @@ public class AtmService {
                 }
                 dineroTotalSacado = saldoSacado + creditSacado;
             }
-            tarjeta.setSaldoDisponible(saldoTarjeta);
-            tarjeta.setCreditoDisponible(creditTarjeta);
-            tarjeta.mostrarTarjeta();
+            tarjetaCredit.setSaldoDisponible(saldoTarjeta);
+            tarjetaCredit.setCreditoDisponible(creditTarjeta);
+            tarjetaCredit.mostrarTarjeta();
             mostrarCajeroArray(cajero);
         }
     }

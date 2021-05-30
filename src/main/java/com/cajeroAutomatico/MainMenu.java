@@ -54,17 +54,7 @@ public class MainMenu {
             } while (!operation.equals("sacar dinero") && !salir);
 
             if (!salir) {
-                int amount = ClientInput.askAmount();
-                String nif = ClientInput.askNif(cajero);
-                int pin = ClientInput.askPin(cajero, nif);
-
-                if (tarjetaDebito.getClientNif().equals(nif) && tarjetaDebito.getClientPin().equals(pin)) {
-                    // AtmService.sacarDineroDebito(cajero, tarjetaDebito, amount);
-                    AtmService.sacarDebitoArray(cajero, tarjetaDebito, amount);
-                } else if (tarjetaCredito.getClientNif().equals(nif) && tarjetaCredito.getClientPin().equals(pin)) {
-                    // AtmService.sacarDineroCredit(cajero, tarjetaCredito, amount);
-                    AtmService.sacarCreditArray(cajero, tarjetaCredito, amount);
-                }
+                AtmService.sacarDinero(cajero);
             }
         }
     }
